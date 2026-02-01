@@ -4,11 +4,10 @@ from functools import partial
 
 import torch
 import torch.nn as nn
-from mmengine.model import BaseModule
 from mmengine.utils import digit_version
 
 
-class ConditionalPositionEncoding(BaseModule):
+class ConditionalPositionEncoding(nn.Module):
     """The Conditional Position Encoding (CPE) module.
 
     The CPE is the implementation of 'Conditional Positional Encodings
@@ -46,7 +45,7 @@ class ConditionalPositionEncoding(BaseModule):
         return x
 
 
-class PositionEncodingFourier(BaseModule):
+class PositionEncodingFourier(nn.Module):
     """The Position Encoding Fourier (PEF) module.
 
     The PEF is adopted from EdgeNeXt <https://arxiv.org/abs/2206.10589>'_.

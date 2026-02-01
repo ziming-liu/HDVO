@@ -10,10 +10,9 @@ Dependent packages: don't need any extral dependency
 # Copyright (c) OpenMMLab. All rights reserved.
 from abc import ABCMeta, abstractmethod
 
-from mmengine.model import BaseModule
 
 
-class BaseBackbone(BaseModule, metaclass=ABCMeta):
+class BaseBackbone(nn.Module, metaclass=ABCMeta):
     """Base backbone.
 
     This class defines the basic functions of a backbone. Any backbone that

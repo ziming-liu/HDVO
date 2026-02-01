@@ -163,7 +163,7 @@ class StereoHDVOPosesup(HDVO):
         else:  
             if self.save_last_pose is None:
                 abs_poses = kwargs['pose']
-                self.save_last_pose = torch.linalg.solve(abs_poses[:,1,:,:], abs_poses[:,0,:,:])
+                self.save_last_pose = torch.linalg.solve(abs_poses[:,1,:,:].float(), abs_poses[:,0,:,:].float()).to(abs_poses.dtype)
             initcTr = self.save_last_pose
         
         t_vo = time.time()
@@ -189,6 +189,7 @@ class StereoHDVOPosesup(HDVO):
         else:
             self.timer["avg_time"] = (self.timer["sum_time"]-self.timer["f0_time"]) / (self.timer["count"]-1)
             self.timer["fps"] = 1 / self.timer["avg_time"]
+            print(f'Test frame {self.vis_id} time: {t1 - t0:.3f}s, VO time: {t1 - t_vo:.3f}s, avg time: {self.timer["avg_time"]:.3f}s, fps: {self.timer["fps"]:.2f}')
 
         outputs[4] = pred_pose.detach().cpu().numpy() if isinstance(pred_pose, torch.Tensor) else pred_pose
 
@@ -198,13 +199,9 @@ class StereoHDVOPosesup(HDVO):
         if 'pose' in kwargs.keys(): 
             abs_poses = kwargs['pose'] # B T 4 4 load gt pose
             assert T == 2
+            if abs_poses.dtype == torch.float16:
+                abs_poses = abs_poses.float()
             gtcTr = torch.linalg.solve(abs_poses[:,1,:,:], abs_poses[:,0,:,:])
             gtrTc = torch.linalg.solve(abs_poses[:,0,:,:], abs_poses[:,1,:,:])
             outputs[5] = gtcTr.detach().cpu().numpy()  
-
-            assert T == 2
-            gtcTr = torch.linalg.solve(abs_poses[:,1,:,:], abs_poses[:,0,:,:])
-            gtrTc = torch.linalg.solve(abs_poses[:,0,:,:], abs_poses[:,1,:,:])
-            outputs[5] = gtcTr.detach().cpu().numpy()  
-
         return outputs

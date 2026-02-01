@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn import build_activation_layer, build_conv_layer, build_norm_layer
-from mmengine.model import BaseModule, ModuleList, Sequential
+from mmengine.model import  ModuleList, Sequential
 from torch.nn.modules.batchnorm import _BatchNorm
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmcv.runner import load_checkpoint
@@ -19,7 +19,7 @@ from ..utils.se_layer import SELayer
 from .base_backbone import BaseBackbone
 
 
-class MobileOneBlock(BaseModule):
+class MobileOneBlock(nn.Module):
     """MobileOne block for MobileOne backbone.
 
     Args:

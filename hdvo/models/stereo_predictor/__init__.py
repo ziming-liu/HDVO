@@ -13,5 +13,5 @@ from .cascade_stereo_psmnet import *
 from .cascade_stereo_gwcnet import *
 from .crestereo import CREStereo
 from .igevstereo import IGEVStereo
-from .stereonet import StereoNet
+# from .stereonet import StereoNet
 from .coex import CoEx

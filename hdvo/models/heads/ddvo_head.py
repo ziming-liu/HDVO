@@ -168,6 +168,17 @@ class PoseDDVOHead(nn.Module):
 
         b,_,h,w = Ir.shape
         est_poses = []
+        
+        # Convert FP16 to FP32 for OpenCV compatibility
+        if Ir.dtype == torch.float16:
+            Ir = Ir.float()
+        if Ic.dtype == torch.float16:
+            Ic = Ic.float()
+        if Zr.dtype == torch.float16:
+            Zr = Zr.float()
+        if target_mask.dtype == torch.float16:
+            target_mask = target_mask.float()
+            
         Ir, Ic = Ir.detach().permute(0,2,3,1).cpu().numpy(), Ic.detach().permute(0,2,3,1).cpu().numpy()
         Zr = Zr.detach().cpu().numpy()
         target_mask = target_mask.detach().cpu().numpy()
@@ -179,7 +190,7 @@ class PoseDDVOHead(nn.Module):
             est_poses.append(torch.FloatTensor(est_pose).to(source_img.device))
         est_poses = torch.stack(est_poses)
         return est_poses
-
+    
     def loss(self, warped_ref, ref_img):
         loss = {}
         ddvo_photoloss = self.photo_loss(warped_ref, ref_img)

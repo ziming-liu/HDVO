@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.utils.checkpoint as cp
 from mmcv.cnn.bricks import DropPath, build_activation_layer, build_norm_layer
-from mmengine.model import BaseModule, ModuleList, Sequential
+from mmengine.model import  ModuleList, Sequential
 from ..registry import BACKBONES
 from mmengine.registry import MODELS
 
@@ -47,7 +47,7 @@ class LayerNorm2d(nn.LayerNorm):
         return x
 
 
-class ConvNeXtBlock(BaseModule):
+class ConvNeXtBlock(nn.Module):
     """ConvNeXt Block.
 
     Args:

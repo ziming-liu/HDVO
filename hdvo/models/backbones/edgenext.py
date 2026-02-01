@@ -6,7 +6,7 @@ from typing import Sequence
 import torch
 import torch.nn as nn
 from mmcv.cnn.bricks import DropPath, build_activation_layer, build_norm_layer
-from mmengine.model import BaseModule, ModuleList, Sequential
+from mmengine.model import  ModuleList, Sequential
 from ..registry import BACKBONES
 from mmcv.cnn import ConvModule, constant_init, kaiming_init
 from mmcv.runner import load_checkpoint
@@ -19,7 +19,7 @@ from .base_backbone import BaseBackbone
 from .convnext_mmcls import ConvNeXtBlock,LayerNorm2d
 
 
-class SDTAEncoder(BaseModule):
+class SDTAEncoder(nn.Module):
     """A PyTorch implementation of split depth-wise transpose attention (SDTA)
     encoder.
 

@@ -46,12 +46,14 @@ Official PyTorch implementation of **HDVO** from [ACENTAURI team @ INRIA](https:
 
 ### Prerequisites
 
-- Python == 3.10
-- PyTorch == 2.0.1
-- CUDA == 11.8 (for GPU support)
+- Python == 3.8
+- PyTorch == 2.1.0a0 (Jetson version)
+- JetPack == 5.1.2
+- NVIDIA Jetson Orion device
 
 ### Environment Setup
 
+**Note:** This branch is specifically for NVIDIA Jetson Orion devices. For standard GPU installation, please switch to the main branch.
 
 ```bash
 # Clone the repository
@@ -59,20 +61,37 @@ git clone https://github.com/ziming-liu/hdvo.git
 cd hdvo
 
 # Create conda environment
-conda create -n hdvo python=3.8
+conda create -n hdvo python==3.8
 conda activate hdvo
 
-# Install dependencies
-cat requirements.txt | while read package; do    if [ -n "$package" ] && [[ ! "$package" =~ ^#.* ]]; then      echo "Installing: $package";     pip install "$package" || echo "Skip failed packages: $package";   fi; done
+# Install PyTorch Jetson version
+# Refer to: https://docs.nvidia.com/deeplearning/frameworks/install-pytorch-jetson-platform/index.html
+# v512 is the JetPack version (5.1.2)
+export TORCH_INSTALL=https://developer.download.nvidia.cn/compute/redist/jp/v512/pytorch/torch-2.1.0a0+41361538.nv23.06-cp38-cp38-linux_aarch64.whl
 
-# Install mmcv 
-cd mmcv-full-1.6.0 && python setup.py develop 
+python3 -m pip install --upgrade pip
+python3 -m pip install numpy==1.26.1
+python3 -m pip install --no-cache $TORCH_INSTALL
+
+# Install mmcv-full 1.6.0
+cd mmcv-full-1.6.0 && python setup.py develop
+cd ..
+
+# Install other dependencies
+source $(conda info --base)/etc/profile.d/conda.sh && conda activate hdvo && cat requirements_orion.txt | while read package; do    if [ -n "$package" ] && [[ ! "$package" =~ ^#.* ]]; then      echo "Installing: $package";     pip install "$package" || echo "Skip failed packages: $package";   fi; done
+
+# Install torchvision from source
+git clone https://github.com/pytorch/vision.git
+cd vision
+git checkout tags/v0.19.0
+pip install -e .
+cd ..
 
 # Install the package hdvo
-python install -e .
+pip install -e .
 
-# Install openrox 
-bash build_openrox.sh  $OPENROX_DIR  $HDVO_DIR
+# Install openrox
+bash build_openrox.sh $OPENROX_DIR $HDVO_DIR
 
 # or use compiled openrox file
 $HDVO_DIR=/your_path
@@ -80,8 +99,6 @@ export LD_LIBRARY_PATH=$HDVO_DIR/openrox/cmake:$LD_LIBRARY_PATH
 
 # rox_odometry_module.so has been included in this repo
 ```
-
-For Nvidia Jetson Orion and Thor, pls switch to corresponding git branches.
 
 ## 📦 Dataset Preparation
 
@@ -108,25 +125,40 @@ Please refer to [prepare_dataset.md](docs/prepare_dataset.md) for detailed instr
 # Coming soon
 ``` -->
 
-### Inference
+### Inference on Jetson
 
-For detailed inference instructions, please see [inference.md](docs/inference.md).
+For faster inference on NVIDIA Jetson devices, use `test_on_jetson.py` with optimization options:
 
-
+**Basic inference:**
 ```bash
-torchrun --standalone --nnodes=1 --nproc_per_node=1 --master_port=12860 \
-  tools/test.py configs/hdvo/stereohdvo_posesup_coex_kittiodom_huberloss.py \
-   work_dirs/stereohdvo_posesup_coex_kittiodom_huberloss/iter_40000.pth   \
-    --launcher pytorch  --test_seq_id 09 
+python tools/test_on_jetson.py \
+  configs/hdvo/stereohdvo_posesup_coex_kittiodom_huberloss.py \
+  pretrained/iter_40000.pth \
+  --test_seq_id 09
 ```
 
-### Distributed Training
-
+**FP16 inference (faster with lower memory):**
 ```bash
-torchrun --standalone --nnodes=1 --nproc_per_node=$NUM_GPU  \
-    tools/train.py configs/hdvo/stereohdvo_posesup_coex_kittiodom_huberloss.py \
-      --launcher pytorch 
+python tools/test_on_jetson.py \
+  configs/hdvo/stereohdvo_posesup_coex_kittiodom_huberloss.py \
+  pretrained/iter_40000.pth \
+  --test_seq_id 09 \
+  --fp16
 ```
+
+**FP16 + JIT optimization (maximum speed):**
+```bash
+python tools/test_on_jetson.py \
+  configs/hdvo/stereohdvo_posesup_coex_kittiodom_huberloss.py \
+  pretrained/iter_40000.pth \
+  --test_seq_id 09 \
+  --fp16 \
+  --compile
+```
+
+**Note:** FP16 and JIT optimization can provide 1.5-2x speedup on Jetson platforms with minimal accuracy loss.
+
+
 
 ## 📄 License
 

@@ -6,8 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from mmcv.cnn.bricks.drop import build_dropout
-from mmengine.model import BaseModule
-from mmengine.model.weight_init import trunc_normal_
+# from mmengine.model.weight_init import trunc_normal_
 from mmengine.utils import digit_version
 
 from .helper import to_2tuple
@@ -23,7 +22,7 @@ else:
     torch_meshgrid = torch.meshgrid
 
 
-class WindowMSA(BaseModule):
+class WindowMSA(nn.Module):
     """Window based multi-head self-attention (W-MSA) module with relative
     position bias.
 
@@ -81,7 +80,7 @@ class WindowMSA(BaseModule):
     def init_weights(self):
         super(WindowMSA, self).init_weights()
 
-        trunc_normal_(self.relative_position_bias_table, std=0.02)
+        # trunc_normal_(self.relative_position_bias_table, std=0.02)
 
     def forward(self, x, mask=None):
         """
@@ -132,7 +131,7 @@ class WindowMSA(BaseModule):
         return (seq1[:, None] + seq2[None, :]).reshape(1, -1)
 
 
-class WindowMSAV2(BaseModule):
+class WindowMSAV2(nn.Module):
     """Window based multi-head self-attention (W-MSA) module with relative
     position bias.
 
@@ -304,7 +303,7 @@ class WindowMSAV2(BaseModule):
         return x
 
 
-class ShiftWindowMSA(BaseModule):
+class ShiftWindowMSA(nn.Module):
     """Shift Window Multihead Self-Attention Module.
 
     Args:
@@ -470,7 +469,7 @@ class ShiftWindowMSA(BaseModule):
         return attn_mask
 
 
-class MultiheadAttention(BaseModule):
+class MultiheadAttention(nn.Module):
     """Multi-head Attention Module.
 
     This module implements multi-head attention that supports different input
@@ -555,7 +554,7 @@ class MultiheadAttention(BaseModule):
         return x
 
 
-class BEiTAttention(BaseModule):
+class BEiTAttention(nn.Module):
     """Window based multi-head self-attention (W-MSA) module with relative
     position bias.
 
@@ -658,8 +657,8 @@ class BEiTAttention(BaseModule):
 
     def init_weights(self):
         super().init_weights()
-        if self.use_rel_pos_bias:
-            trunc_normal_(self.relative_position_bias_table, std=0.02)
+        # if self.use_rel_pos_bias:
+            # trunc_normal_(self.relative_position_bias_table, std=0.02)
 
     def forward(self, x, rel_pos_bias=None):
         """
@@ -703,7 +702,7 @@ class BEiTAttention(BaseModule):
         return x
 
 
-class ChannelMultiheadAttention(BaseModule):
+class ChannelMultiheadAttention(nn.Module):
     """Channel Multihead Self-attention Module.
 
     This module implements channel multi-head attention that supports different
@@ -791,7 +790,7 @@ class ChannelMultiheadAttention(BaseModule):
         return x
 
 
-class LeAttention(BaseModule):
+class LeAttention(nn.Module):
     """LeViT Attention. Multi-head attention with attention bias,  which is
     proposed in `LeViT: a Vision Transformer in ConvNet’s Clothing for Faster
     Inference<https://arxiv.org/abs/2104.01136>`_

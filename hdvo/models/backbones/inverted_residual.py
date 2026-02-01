@@ -3,12 +3,11 @@ import torch.nn as nn
 import torch.utils.checkpoint as cp
 from mmcv.cnn import ConvModule
 from mmcv.cnn.bricks import DropPath
-from mmengine.model import BaseModule
 
 from ..utils.se_layer import SELayer
 
 
-class InvertedResidual(BaseModule):
+class InvertedResidual(nn.Module):
     """Inverted Residual Block.
 
     Args:

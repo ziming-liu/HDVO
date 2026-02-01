@@ -42,7 +42,21 @@ def single_gpu_test(model, data_loader):
     results = [[] for _ in range(10)] # depth, pose, seq_dir
     dataset = data_loader.dataset
     prog_bar = mmcv.ProgressBar(len(dataset))
+    
+    # Check if model is in half precision
+    try:
+        model_dtype = next(model.parameters()).dtype
+        use_fp16 = (model_dtype == torch.float16)
+    except StopIteration:
+        use_fp16 = False
+    
     for data in data_loader:
+        # Convert input data to half precision if model uses FP16
+        if use_fp16:
+            for key in data:
+                if isinstance(data[key], torch.Tensor) and data[key].dtype == torch.float32:
+                    data[key] = data[key].half()
+        
         with torch.no_grad():
             result = model(return_loss=False, **data)
         num_output = len(result)
@@ -85,8 +99,22 @@ def multi_gpu_test(model, data_loader, tmpdir=None, gpu_collect=True, tem_dir=No
     rank, world_size = get_dist_info()
     if rank == 0:
         prog_bar = mmcv.ProgressBar(len(dataset))
+    
+    # Check if model is in half precision
+    try:
+        model_dtype = next(model.parameters()).dtype
+        use_fp16 = (model_dtype == torch.float16)
+    except StopIteration:
+        use_fp16 = False
+    
     tictoc = TicToc()
     for data in data_loader:
+        # Convert input data to half precision if model uses FP16
+        if use_fp16:
+            for key in data:
+                if isinstance(data[key], torch.Tensor) and data[key].dtype == torch.float32:
+                    data[key] = data[key].half()
+        
         with torch.no_grad():
             result = model(return_loss=False, **data)
         num_output = len(result)
