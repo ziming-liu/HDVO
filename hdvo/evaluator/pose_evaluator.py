@@ -204,7 +204,7 @@ class PoseEvaluator:
         local_ate_mean, local_ate_std = self._compute_local_ATE(poses_gt_dict, poses_result_dict)
         
         # Print results
-        print_log(f"\nTranslational Error (%): {ave_t_err * 100:.3f}", logger=logger)
+        print_log(f"Translational Error (%): {ave_t_err * 100:.3f}", logger=logger)
         print_log(f"Rotational Error (deg/100m): {ave_r_err / np.pi * 180 * 100:.3f}", logger=logger)
         print_log(f"ATE (m): {ate:.3f}", logger=logger)
         print_log(f"RPE Trans (m): {rpe_trans:.3f}", logger=logger)

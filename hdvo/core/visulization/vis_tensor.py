@@ -1,5 +1,4 @@
 from genericpath import exists
-from numpy.testing._private.nosetester import NoseTester
 from numpy.core.fromnumeric import clip
 from numpy.lib.twodim_base import mask_indices
 import torch

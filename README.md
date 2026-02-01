@@ -44,16 +44,18 @@ Official PyTorch implementation of **HDVO** from [ACENTAURI team @ INRIA](https:
 
 ## 🛠️ Installation
 
-### Prerequisites
+### For NVIDIA Jetson Orion
+
+#### Prerequisites
 
 - Python == 3.8
 - PyTorch == 2.1.0a0 (Jetson version)
 - JetPack == 5.1.2
 - NVIDIA Jetson Orion device
 
-### Environment Setup
+#### Environment Setup
 
-**Note:** This branch is specifically for NVIDIA Jetson Orion devices. For standard GPU installation, please switch to the main branch.
+**Note:** This section is specifically for NVIDIA Jetson Orion devices. For standard GPU installation, please switch to the main branch.
 
 ```bash
 # Clone the repository
@@ -99,6 +101,61 @@ export LD_LIBRARY_PATH=$HDVO_DIR/openrox/cmake:$LD_LIBRARY_PATH
 
 # rox_odometry_module.so has been included in this repo
 ```
+
+### For NVIDIA Jetson Thor (Docker)
+**Device**: NVIDIA Jetson Thor (JetPack 7.0) | **Base Image**: nvcr.io/nvidia/pytorch:25.08-py3 | **CUDA**: 13.0 | **Python**: 3.12 | **PyTorch**: 2.8.0
+#### Prerequisites
+
+- NVIDIA Jetson Thor device
+- JetPack == 7.0
+- Docker with NVIDIA Container Runtime
+- Sufficient storage (~10GB for Docker image)
+
+#### Build Docker Image
+
+```bash
+# Navigate to the HDVO directory
+cd /your_path_to_hdvo/hdvo
+
+# Build the Docker image (this may take 15-30 minutes)
+./build_docker_thor.sh
+
+```
+
+#### Run Container
+
+
+```bash
+# Use the provided run script
+bash run_docker_thor_custom.sh  /path_to_hdvo/data_sets
+```
+
+
+#### Important Notes
+
+**Volume Mounting:**
+- The `-v $PWD:/workspace` mounts your current directory to `/workspace` in the container
+- Any changes made in `/workspace` will persist on your host machine
+- To mount a different directory: `-v /path/to/your/data:/workspace`
+
+
+#### Known Issues and Fixes
+
+**1. Torch Checkpoint Loading Warning**
+
+If you encounter warnings about `weights_only=True`, modify the checkpoint loading function.
+
+**2. Numpy Compatibility**
+
+The Dockerfile installs `numpy==1.26.0` for compatibility. If you encounter issues:
+
+```bash
+pip install --force-reinstall numpy==1.26.0
+```
+
+
+
+
 
 ## 📦 Dataset Preparation
 
