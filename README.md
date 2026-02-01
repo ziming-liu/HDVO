@@ -18,9 +18,21 @@ Official PyTorch implementation of **HDVO** from [ACENTAURI team @ INRIA](https:
 
 ---
 
-## 🔥 News
+<!-- ## 🔥 News
 
-- **[2024-02]** Initial code release
+- **[2024-02]** Initial code release -->
+
+## 📌 Repository Branches
+
+This repository contains **three branches** for different deployment scenarios:
+
+- **`main`**: Base branch containing training and testing code for standard platforms
+- **`jetson-orion`**: Optimized branch for deployment on NVIDIA Jetson devices with Orion chips
+- **`jetson-thor`**: Optimized branch for deployment on NVIDIA Jetson devices with Thor chips
+
+**Key Differences**: The three branches share the same core algorithm and implementation code. The main differences are in the **runtime environment requirements** and **dependency packages** to ensure compatibility with different hardware platforms.
+
+> 💡 **Tip**: If you're deploying on NVIDIA Jetson hardware, please switch to the corresponding branch (`jetson-orion` or `jetson-thor`) to ensure optimal compatibility and performance.
 
 ## ✨ Highlights
 
@@ -81,7 +93,19 @@ export LD_LIBRARY_PATH=$HDVO_DIR/openrox/cmake:$LD_LIBRARY_PATH
 # rox_odometry_module.so has been included in this repo
 ```
 
-For Nvidia Jetson Orion and Thor, pls switch to corresponding git branches.
+### Deployment on NVIDIA Jetson Devices
+
+For deployment on **NVIDIA Jetson Orion** or **Thor** chips, please switch to the corresponding branch:
+
+```bash
+# For Jetson Orion
+git checkout jetson-orion
+
+# For Jetson Thor
+git checkout jetson-thor
+```
+
+These branches contain optimized configurations and dependencies specifically tailored for Jetson hardware platforms.
 
 ## 📦 Dataset Preparation
 
