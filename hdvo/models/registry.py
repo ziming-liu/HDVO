@@ -1,0 +1,15 @@
+from mmcv.utils import Registry
+
+BACKBONES = Registry('backbone')
+NECKS = Registry('neck')
+HEADS = Registry('head')
+LOSSES = Registry('loss')
+MASKS =  Registry('mask')
+GEOMETRY =  Registry('geometry')
+COST_PROCESSORS= Registry('cost_processor')
+DISP_PREDICTORS = Registry('disp_predictor')
+COST_AGGREGATORS = Registry('cost_aggregator')
+MONO_PREDICTOR = Registry('mono_predictor')
+STEREO_PREDICTOR = Registry('stereo_predictor')
+VISUAL_ODOMETRY = Registry('visual_odometry')
+HYBRID_METHOD = Registry('hybrid_method')
