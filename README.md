@@ -14,13 +14,13 @@
 
 <br>
 
-Official PyTorch implementation of **HDVO** from [ACENTAURI team, INRIA](https://team.inria.fr/acentauri/).
+Official PyTorch implementation of **HDVO** from [ACENTAURI team @ INRIA](https://team.inria.fr/acentauri/).
 
 ---
 
 ## 🔥 News
 
-- **[2026-03]** Initial code release
+- **[2024-02]** Initial code release
 
 ## ✨ Highlights
 
